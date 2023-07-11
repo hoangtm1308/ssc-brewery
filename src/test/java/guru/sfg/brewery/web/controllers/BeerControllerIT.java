@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @WebMvcTest
-public class BeerControllerIT extends BaseIT{
+public class BeerControllerIT extends BaseIT {
 
     //Mock user để pass qua spring security đang áp dụng trong test
     //Dùng để check Security Logic (cần có username mới pass)
@@ -41,5 +41,13 @@ public class BeerControllerIT extends BaseIT{
                 .andExpect(model().attributeExists("beer"));
     }
 
+    //Test case to test that In Memory User Details Entity is existed
+    @Test
+    void createNewBeersUsingUserDetails() throws Exception {
+        mockMvc.perform(get("/beers/new")
+                        .with(httpBasic("user", "password")))
+                .andExpect(status().isOk()).andExpect(view().name("beers/createBeer"))
+                .andExpect(model().attributeExists("beer"));
+    }
 
 }
