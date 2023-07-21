@@ -54,6 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests(authorize -> {
                     authorize
+                            .antMatchers("/h2-console/**").permitAll()
                             .antMatchers("/", "/webjars/**", "/login", "/resources/**").permitAll()
 //                        .antMatchers("/beers/find","/beer*").permitAll() //config thêm find beer không cần đăng nhập
                             .antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
@@ -65,6 +66,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin().and()
                 .httpBasic();
+
+        //h2 console config
+        http.headers().frameOptions().sameOrigin();
     }
 
     //Create 2 User Details and put into User In-Memory Details Manager
