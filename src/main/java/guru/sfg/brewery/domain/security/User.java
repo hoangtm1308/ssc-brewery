@@ -15,8 +15,6 @@ import java.util.Set;
 public class User {
 
     //Tạo user tái hiện từ User của Spring Security
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -32,10 +30,13 @@ public class User {
 
     @Builder.Default //Khi dùng builder mà không set giá trị sẽ mặc định để giá trị này
     private boolean accountNonExpired = true;
+
     @Builder.Default
     private boolean accountNonLocked = true;
+
     @Builder.Default
     private boolean credentialsNonExpired = true;
+
     @Builder.Default
     private boolean enabled = true;
 }
