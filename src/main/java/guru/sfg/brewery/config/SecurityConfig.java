@@ -47,10 +47,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     authorize
                             .antMatchers("/h2-console/**").permitAll()
                             .antMatchers("/", "/webjars/**", "/login", "/resources/**").permitAll()
-                            .antMatchers("/beers/find","/beer*").permitAll() //config thêm find beer không cần đăng nhập
+                            .antMatchers("/beers/find", "/beer*").permitAll() //config thêm find beer không cần đăng nhập
                             .antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
-                            .mvcMatchers(HttpMethod.DELETE,"api/v1/beer/**").hasRole("ADMIN")
-                            .mvcMatchers(HttpMethod.GET,"/brewery/breweries","/brewery/api/v1/breweries").hasRole("CUSTOMER")
+                            .mvcMatchers(HttpMethod.DELETE, "api/v1/beer/**").hasRole("ADMIN")
+                            .mvcMatchers(HttpMethod.GET, "/brewery/breweries", "/brewery/api/v1/breweries").hasAnyRole("ADMIN", "CUSTOMER")
 //                            .mvcMatchers(HttpMethod.GET,"/brewery/api/v1/breweries").hasRole("CUSTOMER")
                             .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll();
 
@@ -102,7 +102,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        Using JPA User to create the Spring Security User
 //        auth.userDetailsService(this.jpaUserDetailsService).passwordEncoder(passwordEncoder());
 
-        //Create User doing Authentication Fluent API (Authentication Manager Builder) - Difference way
+    //Create User doing Authentication Fluent API (Authentication Manager Builder) - Difference way
 //        auth.inMemoryAuthentication()
 //                .withUser("hoangtm")
 //                .password("{noop}1308n5ggp") // dùng {noop} cho những password cần encode
