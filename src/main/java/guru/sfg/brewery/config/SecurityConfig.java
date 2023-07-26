@@ -47,12 +47,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     authorize
                             .antMatchers("/h2-console/**").permitAll()
                             .antMatchers("/", "/webjars/**", "/login", "/resources/**").permitAll()
-                            .antMatchers("/beers/find", "/beer*").permitAll() //config thêm find beer không cần đăng nhập
-                            .antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
-                            .mvcMatchers(HttpMethod.DELETE, "api/v1/beer/**").hasRole("ADMIN")
-                            .mvcMatchers(HttpMethod.GET, "/brewery/breweries", "/brewery/api/v1/breweries").hasAnyRole("ADMIN", "CUSTOMER")
+//                            .antMatchers("/beers/find", "/beer*").permitAll() //config thêm find beer không cần đăng nhập
+                            .antMatchers(HttpMethod.GET, "/api/v1/beer/**")
+                                .hasAnyRole("ADMIN","CUSTOMER","USER")
+                            //.permitAll()
+                            .mvcMatchers(HttpMethod.DELETE, "api/v1/beer/**")
+                                .hasRole("ADMIN")
+                            .mvcMatchers(HttpMethod.GET, "/brewery/breweries", "/brewery/api/v1/breweries")
+                                .hasAnyRole("ADMIN", "CUSTOMER")
 //                            .mvcMatchers(HttpMethod.GET,"/brewery/api/v1/breweries").hasRole("CUSTOMER")
-                            .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll();
+                            .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}")
+                                .hasAnyRole("ADMIN","CUSTOMER","USER")
+                            .mvcMatchers("/beers/find","/beer/{beerId}")
+                                .hasAnyRole("ADMIN","CUSTOMER","USER");
+                            //.permitAll();
 
                 })
                 .authorizeRequests()
