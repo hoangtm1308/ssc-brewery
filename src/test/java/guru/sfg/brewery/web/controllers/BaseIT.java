@@ -23,20 +23,20 @@ public abstract class BaseIT {
 
     public MockMvc mockMvc;
 
-    @MockBean
-    BeerRepository beerRepository;
-
-    @MockBean
-    BeerInventoryRepository beerInventoryRepository;
-
-    @MockBean
-    BreweryService breweryService;
-
-    @MockBean
-    CustomerRepository customerRepository;
-
-    @MockBean
-    BeerService beerService;
+//    @MockBean
+//    BeerRepository beerRepository;
+//
+//    @MockBean
+//    BeerInventoryRepository beerInventoryRepository;
+//
+//    @MockBean
+//    BreweryService breweryService;
+//
+//    @MockBean
+//    CustomerRepository customerRepository;
+//
+//    @MockBean
+//    BeerService beerService;
 
     @BeforeEach
     void init() {
