@@ -64,4 +64,11 @@ public abstract class BaseIT {
                 Arguments.of("scott","hoangtm")
         );
     }
+
+    public static Stream<Arguments> getStreamAdminCustomer(){
+        return Stream.of(
+                Arguments.of("hoangtm","hoangtm"),
+                Arguments.of("scott","hoangtm")
+        );
+    }
 }
