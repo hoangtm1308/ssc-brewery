@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.beans.Transient;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -47,7 +46,7 @@ public class JpaUserDetailsService implements UserDetailsService {
     private Collection<? extends GrantedAuthority> convertToSpringAuthorities(Set<Authority> authorities) {
         if(authorities != null && authorities.size() > 0){
             Set<GrantedAuthority> grantedAuthoritySet = authorities.stream()
-                    .map(authority -> authority.getRole()) //Can use Method Reference
+                    .map(authority -> authority.getPermission()) //Can use Method Reference
                     .map(role -> new SimpleGrantedAuthority(role)) //Can use Method Reference
                     .collect(Collectors.toSet());
             return grantedAuthoritySet;
