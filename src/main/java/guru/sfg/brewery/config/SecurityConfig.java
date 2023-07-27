@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true) //Turn Method Secure of Spring Security on
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 //    @Autowired
@@ -53,8 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             .antMatchers(HttpMethod.GET, "/api/v1/beer/**")
                                 .hasAnyRole("ADMIN","CUSTOMER","USER")
                             //.permitAll()
-                            .mvcMatchers(HttpMethod.DELETE, "api/v1/beer/**")
-                                .hasRole("ADMIN")
+//                            .mvcMatchers(HttpMethod.DELETE, "api/v1/beer/**")
+//                            .hasRole("ADMIN") // Có thể sử dụng @Secured hoặc @PreAuthorize ở các method cùng với @EnableGlobalMethodSecurity ở config để tránh viết theo kiểu này
                             .mvcMatchers(HttpMethod.GET, "/brewery/breweries", "/brewery/api/v1/breweries")
                                 .hasAnyRole("ADMIN", "CUSTOMER")
 //                            .mvcMatchers(HttpMethod.GET,"/brewery/api/v1/breweries").hasRole("CUSTOMER")

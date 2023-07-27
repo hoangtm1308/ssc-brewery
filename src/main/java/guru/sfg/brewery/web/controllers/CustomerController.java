@@ -21,6 +21,7 @@ import guru.sfg.brewery.domain.Customer;
 import guru.sfg.brewery.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -48,7 +49,7 @@ public class CustomerController {
         return "customers/findCustomers";
     }
 
-    @Secured({"ROLE_ADMIN","ROLE_CUSTOMER"})
+    @Secured({"ROLE_ADMIN","ROLE_CUSTOMER"}) //Secure this method: only ADMIN and CUSTOMER Role can access this
     @GetMapping
     public String processFindFormReturnMany(Customer customer, BindingResult result, Model model){
         // find customers by name
@@ -83,6 +84,7 @@ public class CustomerController {
         return "customers/createCustomer";
     }
 
+    @PreAuthorize("hasRole('ADMIN')") // Using Spring Expression Language - another way to authorization which method can be using by each role instead of @Secured
     @PostMapping("/new")
     public String processCreationForm(Customer customer) {
         //ToDO: Add Service
