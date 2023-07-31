@@ -1,6 +1,10 @@
 package guru.sfg.brewery.domain.security;
 
 import lombok.*;
+import org.springframework.security.core.CredentialsContainer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -13,7 +17,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Builder
-public class User {
+public class User implements UserDetails, CredentialsContainer {
 
     //Tạo user tái hiện từ User của Spring Security
     @Id
@@ -23,15 +27,16 @@ public class User {
     private String password;
     private String username;
 
-    @Transient
-    private Set<Authority> authorities;
-
     //từ Set<Role> của User cho vào stream để lấy các Set<Authority> của từng role cho vào thành Stream của các Set<Authority>
     // dùng flatMap biến đổi thành 1 Set các Authority duy nhất
-    public Set<Authority> getAuthorities() {
+    @Transient
+    public Set<GrantedAuthority> getAuthorities() {
         return this.roles.stream()
                 .map(role -> role.getAuthorities())
-                .flatMap(authorities1 -> authorities1.stream())
+                .flatMap(authorities -> authorities.stream())
+                .map(authority -> {
+                    return new SimpleGrantedAuthority(authority.getPermission());
+                })
                 .collect(Collectors.toSet());
     }
 
@@ -52,4 +57,29 @@ public class User {
 
     @Builder.Default
     private boolean enabled = true;
+
+    @Override
+    public boolean isAccountNonExpired(){
+        return this.accountNonExpired;
+    }
+
+    @Override
+    public boolean isAccountNonLocked(){
+        return this.accountNonLocked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired(){
+        return this.credentialsNonExpired;
+    }
+
+    @Override
+    public boolean isEnabled(){
+        return this.enabled;
+    }
+
+    @Override
+    public void eraseCredentials() {
+        this.password = null;
+    }
 }
