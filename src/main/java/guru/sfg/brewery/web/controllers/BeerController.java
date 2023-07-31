@@ -21,6 +21,7 @@ package guru.sfg.brewery.web.controllers;
 import guru.sfg.brewery.domain.Beer;
 import guru.sfg.brewery.repositories.BeerInventoryRepository;
 import guru.sfg.brewery.repositories.BeerRepository;
+import guru.sfg.brewery.security.permission.BeerReadPermission;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,7 +50,7 @@ public class BeerController {
     private final BeerInventoryRepository beerInventoryRepository;
 
 
-    @PreAuthorize("hasAuthority('beer.read')")
+    @BeerReadPermission
     @RequestMapping("/find")
     public String findBeers(Model model) {
         model.addAttribute("beer", Beer.builder().build());
