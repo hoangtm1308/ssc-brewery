@@ -1,5 +1,6 @@
 package guru.sfg.brewery.domain.security;
 
+import guru.sfg.brewery.domain.Customer;
 import lombok.*;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,6 +27,9 @@ public class User implements UserDetails, CredentialsContainer {
 
     private String password;
     private String username;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Customer customer;
 
     //từ Set<Role> của User cho vào stream để lấy các Set<Authority> của từng role cho vào thành Stream của các Set<Authority>
     // dùng flatMap biến đổi thành 1 Set các Authority duy nhất
