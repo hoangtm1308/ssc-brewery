@@ -94,7 +94,7 @@ public class UserDataLoader implements CommandLineRunner {
         userRepository.save(User.builder()
                 .username("scott")
                 .password(encoder.encode("hoangtm"))
-                .role(userRole)
+                .role(customerRole)
                 .build());
 
         log.debug("User Loaded: {}", userRepository.count());

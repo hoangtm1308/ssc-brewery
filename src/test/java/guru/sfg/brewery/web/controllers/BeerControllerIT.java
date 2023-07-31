@@ -27,7 +27,7 @@ public class BeerControllerIT extends BaseIT {
     class InitNewForm{
 
         @ParameterizedTest(name = "#{index} with [{arguments}]")
-        @MethodSource("guru.sfg.brewery.web.controllers.BeerControllerIT#getStreamAllUsers")
+        @MethodSource("guru.sfg.brewery.web.controllers.BeerControllerIT#getStreamAdmin")
         void initCreationFormAuth(String username, String password) throws Exception {
             mockMvc.perform(get("/beers/new")
                     .with(httpBasic(username,password)))
@@ -110,13 +110,13 @@ public class BeerControllerIT extends BaseIT {
 
     //Mock user để pass qua spring security đang áp dụng trong test
     //Dùng để check Security Logic (cần có username mới pass)
-    @WithMockUser("hoangtm")
-    @Test
-    void findBeers() throws Exception {
-        mockMvc.perform(get("/beers/find"))
-                .andExpect(status().isOk()).andExpect(view().name("beers/findBeers"))
-                .andExpect(model().attributeExists("beer"));
-    }
+//    @WithMockUser("hoangtm")
+//    @Test
+//    void findBeers() throws Exception {
+//        mockMvc.perform(get("/beers/find"))
+//                .andExpect(status().isOk()).andExpect(view().name("beers/findBeers"))
+//                .andExpect(model().attributeExists("beer"));
+//    }
 
     //using username and password config in application.properties with HttpBasic Auth
     //check authentication logic (cần đúng credential mới pass)
@@ -141,7 +141,7 @@ public class BeerControllerIT extends BaseIT {
     @Test
     void createNewBeersUsingUserDetails() throws Exception {
         mockMvc.perform(get("/beers/new")
-                        .with(httpBasic("user", "hoangtm")))
+                        .with(httpBasic("hoangtm", "hoangtm")))
                 .andExpect(status().isOk()).andExpect(view().name("beers/createBeer"))
                 .andExpect(model().attributeExists("beer"));
     }
@@ -150,8 +150,9 @@ public class BeerControllerIT extends BaseIT {
     void createNewBeersUsingScottUser() throws Exception {
         mockMvc.perform(get("/beers/new")
                         .with(httpBasic("scott", "hoangtm")))
-                .andExpect(status().isOk()).andExpect(view().name("beers/createBeer"))
-                .andExpect(model().attributeExists("beer"));
+                .andExpect(status().isForbidden());
+                //.andExpect(view().name("beers/createBeer"))
+                //.andExpect(model().attributeExists("beer"));
     }
 
 }

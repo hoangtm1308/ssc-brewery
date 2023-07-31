@@ -71,4 +71,10 @@ public abstract class BaseIT {
                 Arguments.of("scott","hoangtm")
         );
     }
+
+    public static Stream<Arguments> getStreamAdmin(){
+        return Stream.of(
+                Arguments.of("hoangtm","hoangtm")
+        );
+    }
 }
