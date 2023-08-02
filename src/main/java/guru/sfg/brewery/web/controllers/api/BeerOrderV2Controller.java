@@ -1,6 +1,7 @@
 package guru.sfg.brewery.web.controllers.api;
 
 import guru.sfg.brewery.domain.security.User;
+import guru.sfg.brewery.security.permission.BeerOrderReadPermissionV2;
 import guru.sfg.brewery.services.BeerOrderService;
 import guru.sfg.brewery.web.model.BeerOrderDto;
 import guru.sfg.brewery.web.model.BeerOrderPagedList;
@@ -24,7 +25,7 @@ public class BeerOrderV2Controller {
 
     private final BeerOrderService beerOrderService;
 
-    @guru.sfg.brewery.security.perms.BeerOrderReadPermissionV2
+    @BeerOrderReadPermissionV2
     @GetMapping
     public BeerOrderPagedList listOrders(
             @AuthenticationPrincipal User user,
@@ -45,7 +46,7 @@ public class BeerOrderV2Controller {
         }
     }
 
-    @guru.sfg.brewery.security.perms.BeerOrderReadPermissionV2
+    @BeerOrderReadPermissionV2
     @GetMapping("{orderId}")
     public BeerOrderDto getOrder(
             @PathVariable("orderId") UUID orderId){
