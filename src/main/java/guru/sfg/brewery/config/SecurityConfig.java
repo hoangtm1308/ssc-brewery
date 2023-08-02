@@ -9,11 +9,19 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true) //Turn Method Secure of Spring Security on
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+
+    //Needed for use with Spring Data JPL SPeL
+    @Bean
+    public SecurityEvaluationContextExtension securityEvaluationContextExtension(){
+        return new SecurityEvaluationContextExtension();
+    }
 
 //    @Autowired
 //    JpaUserDetailsService jpaUserDetailsService;
