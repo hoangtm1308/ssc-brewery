@@ -77,7 +77,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().and()
-                .csrf().disable()
+                //.csrf().disable()
+                .csrf().ignoringAntMatchers("/h2-console/**", "/api/**")
+                .and()
                 .httpBasic();
 
         //h2 console config
