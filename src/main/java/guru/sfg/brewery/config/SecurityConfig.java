@@ -3,23 +3,23 @@ package guru.sfg.brewery.config;
 import guru.sfg.brewery.security.CustomPasswordEncoderFactories;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true) //Turn Method Secure of Spring Security on
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) //Turn Method Secure of Spring Security on
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     //Needed for use with Spring Data JPL SPeL
     @Bean
-    public SecurityEvaluationContextExtension securityEvaluationContextExtension(){
+    public SecurityEvaluationContextExtension securityEvaluationContextExtension() {
         return new SecurityEvaluationContextExtension();
     }
 
@@ -58,25 +58,37 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             .antMatchers("/h2-console/**").permitAll()
                             .antMatchers("/", "/webjars/**", "/login", "/resources/**").permitAll();
 //                            .antMatchers("/beers/find", "/beer*").permitAll() //config thêm find beer không cần đăng nhập
-                            //.antMatchers(HttpMethod.GET, "/api/v1/beer/**")
-                                //.hasAnyRole("ADMIN","CUSTOMER","USER")
-                            //.permitAll()
+                    //.antMatchers(HttpMethod.GET, "/api/v1/beer/**")
+                    //.hasAnyRole("ADMIN","CUSTOMER","USER")
+                    //.permitAll()
 //                            .mvcMatchers(HttpMethod.DELETE, "api/v1/beer/**")
 //                            .hasRole("ADMIN") // Có thể sử dụng @Secured hoặc @PreAuthorize ở các method cùng với @EnableGlobalMethodSecurity ở config để tránh viết theo kiểu này
-                            //.mvcMatchers(HttpMethod.GET, "/brewery/breweries", "/brewery/api/v1/breweries")
-                                //.hasAnyRole("ADMIN", "CUSTOMER");
+                    //.mvcMatchers(HttpMethod.GET, "/brewery/breweries", "/brewery/api/v1/breweries")
+                    //.hasAnyRole("ADMIN", "CUSTOMER");
 //                            .mvcMatchers(HttpMethod.GET,"/brewery/api/v1/breweries").hasRole("CUSTOMER")
-                            //.mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}")
-                                //.hasAnyRole("ADMIN","CUSTOMER","USER")
-                            //.mvcMatchers("/beers/find","/beer/{beerId}")
-                                //.hasAnyRole("ADMIN","CUSTOMER","USER");
-                            //.permitAll();
+                    //.mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}")
+                    //.hasAnyRole("ADMIN","CUSTOMER","USER")
+                    //.mvcMatchers("/beers/find","/beer/{beerId}")
+                    //.hasAnyRole("ADMIN","CUSTOMER","USER");
+                    //.permitAll();
 
                 })
                 .authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().and()
+                .formLogin(loginConfigurer -> {
+                    loginConfigurer.loginProcessingUrl("/login")
+                            .loginPage("/").permitAll()
+                            .successForwardUrl("/")
+                            .defaultSuccessUrl("/")
+                            .failureUrl("/?error");
+                })
+                .logout(logoutConfigurer -> {
+                    logoutConfigurer
+                            .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")) // Spring Security mong đợi logout sẽ gửi POST nên phải viết rõ ở đây
+                            .logoutSuccessUrl("/?logout")
+                            .permitAll();
+                })
                 //.csrf().disable()
                 .csrf().ignoringAntMatchers("/h2-console/**", "/api/**")
                 .and()
@@ -84,6 +96,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         //h2 console config
         http.headers().frameOptions().sameOrigin();
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        //Spring Security giữ để support những hệ thống cổ
+        //return NoOpPasswordEncoder.getInstance();
+        //return new LdapShaPasswordEncoder();
+        //return new StandardPasswordEncoder();
+        //return new BCryptPasswordEncoder();
+//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return CustomPasswordEncoderFactories.customDelegatingPasswordEncoder();
     }
 
     //Create 2 User Details and put into User In-Memory Details Manager
@@ -104,18 +127,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //
 //        return new InMemoryUserDetailsManager(admin, user);
 //    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        //Spring Security giữ để support những hệ thống cổ
-        //return NoOpPasswordEncoder.getInstance();
-        //return new LdapShaPasswordEncoder();
-        //return new StandardPasswordEncoder();
-        //return new BCryptPasswordEncoder();
-//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        return CustomPasswordEncoderFactories.customDelegatingPasswordEncoder();
-    }
-
 
 //    @Override
 //    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
