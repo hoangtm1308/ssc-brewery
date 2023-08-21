@@ -21,6 +21,7 @@ import guru.sfg.brewery.services.BeerService;
 import guru.sfg.brewery.web.model.BeerDto;
 import guru.sfg.brewery.web.model.BeerPagedList;
 import guru.sfg.brewery.web.model.BeerStyleEnum;
+import guru.sfg.brewery.web.model.SQLQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -28,10 +29,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -135,6 +138,43 @@ public class BeerRestController {
         });
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping({"fillparam"})
+    public String fillparam(@RequestBody SQLQuery sqlQuery){
+        // get all index of params
+        String paramInput = sqlQuery.getParamInput();
+        String sql = sqlQuery.getSql();
+
+        List<Integer> listIndexes = new ArrayList<>();
+        int index = 0;
+        while(index != -1){
+            index = sqlQuery.getSql().indexOf('?', index);
+            if (index != -1) {
+                listIndexes.add(index);
+                index++;
+            }
+        }
+        //String params = paramInput.getParams();
+        List<String> paramlst = new ArrayList<>();
+        for (int i = 1; i <= sqlQuery.getNumberOfParams(); i++){
+            int lastIndexOfCurrentParam = paramInput.lastIndexOf("[" + String.valueOf(i) + "]");
+            int firstIndexOfCurrentParam = paramInput.indexOf('-', lastIndexOfCurrentParam);
+            String currentParam = paramInput.substring(firstIndexOfCurrentParam + 3, paramInput.indexOf(']', firstIndexOfCurrentParam) ) ;
+            paramlst.add(currentParam);
+        }
+
+        if(paramlst.size() > 0 && listIndexes.size() == paramlst.size()) {
+            int noNumber = 0;
+            for (int i : listIndexes) {
+                i = sql.indexOf("?");
+                sql = sql.substring(0, i) + StringUtils.quote(paramlst.get(noNumber))
+                        + sql.substring(i + 1);
+                noNumber++;
+            }
+        }
+
+        return sql;
     }
 
 }
