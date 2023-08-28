@@ -43,10 +43,11 @@ public class BreweryController {
         model.addAttribute("breweries", breweryService.getAllBreweries());
         return "breweries/index";
     }
+
     @PreAuthorize("hasAuthority('brewery.read')")
     @GetMapping("/api/v1/breweries")
     public @ResponseBody
-    List<Brewery> getBreweriesJson(){
+    List<Brewery> getBreweriesJson() {
         return breweryService.getAllBreweries();
     }
 }

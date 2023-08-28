@@ -25,7 +25,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class BreweryServiceImpl implements BreweryService{
+public class BreweryServiceImpl implements BreweryService {
 
     private final BreweryRepository breweryRepository;
 

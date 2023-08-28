@@ -30,7 +30,7 @@ public class BeerOrderV2Controller {
     public BeerOrderPagedList listOrders(
             @AuthenticationPrincipal User user,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize){
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
 
         if (pageNumber == null || pageNumber < 0) {
             pageNumber = DEFAULT_PAGE_NUMBER;
@@ -39,22 +39,22 @@ public class BeerOrderV2Controller {
         if (pageSize == null || pageSize < 1) {
             pageSize = DEFAULT_PAGE_SIZE;
         }
-        if(user.getCustomer() != null) {
+        if (user.getCustomer() != null) {
             return beerOrderService.listOrders(user.getCustomer().getId(), PageRequest.of(pageNumber, pageSize));
         } else {
-        return beerOrderService.listOrders(PageRequest.of(pageNumber, pageSize));
+            return beerOrderService.listOrders(PageRequest.of(pageNumber, pageSize));
         }
     }
 
     @BeerOrderReadPermissionV2
     @GetMapping("{orderId}")
     public BeerOrderDto getOrder(
-            @PathVariable("orderId") UUID orderId){
+            @PathVariable("orderId") UUID orderId) {
 
         BeerOrderDto beerOrderDto = beerOrderService.getOrderById(orderId);
 
-        if(beerOrderDto == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Order Not Found");
+        if (beerOrderDto == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order Not Found");
         }
 
         log.debug("Found Order: {}", beerOrderDto);

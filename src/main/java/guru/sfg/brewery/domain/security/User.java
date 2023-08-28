@@ -47,7 +47,7 @@ public class User implements UserDetails, CredentialsContainer {
     @Singular
     @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
-    inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")})
+            inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")})
     private Set<Role> roles;
 
     @Builder.Default //Khi dùng builder mà không set giá trị sẽ mặc định để giá trị này
@@ -63,22 +63,22 @@ public class User implements UserDetails, CredentialsContainer {
     private boolean enabled = true;
 
     @Override
-    public boolean isAccountNonExpired(){
+    public boolean isAccountNonExpired() {
         return this.accountNonExpired;
     }
 
     @Override
-    public boolean isAccountNonLocked(){
+    public boolean isAccountNonLocked() {
         return this.accountNonLocked;
     }
 
     @Override
-    public boolean isCredentialsNonExpired(){
+    public boolean isCredentialsNonExpired() {
         return this.credentialsNonExpired;
     }
 
     @Override
-    public boolean isEnabled(){
+    public boolean isEnabled() {
         return this.enabled;
     }
 

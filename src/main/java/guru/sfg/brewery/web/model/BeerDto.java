@@ -48,7 +48,7 @@ public class BeerDto extends BaseItem {
     private String upc;
     private Integer quantityOnHand;
 
-    @JsonFormat(shape= JsonFormat.Shape.STRING)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private BigDecimal price;
 
 }

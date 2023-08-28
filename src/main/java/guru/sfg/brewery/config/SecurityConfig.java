@@ -101,7 +101,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .httpBasic()
                 .and().rememberMe()
-                
+
                 .tokenRepository(persistentTokenRepository) // using PersistentToken for remember-me
                 .userDetailsService(userDetailsService);
 

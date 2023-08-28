@@ -99,7 +99,7 @@ public class BeerServiceImpl implements BeerService {
 
         if (beerOptional.isPresent()) {
             log.debug("Found BeerId: " + beerId);
-            if(showInventoryOnHand) {
+            if (showInventoryOnHand) {
                 return beerMapper.beerToBeerDto(beerOptional.get());
             } else {
                 return beerMapper.beerToBeerDto(beerOptional.get());

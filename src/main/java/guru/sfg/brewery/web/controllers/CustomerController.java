@@ -45,7 +45,7 @@ public class CustomerController {
 
     @PreAuthorize("hasAuthority('customer.read')")
     @RequestMapping("/find")
-    public String findCustomers(Model model){
+    public String findCustomers(Model model) {
         model.addAttribute("customer", Customer.builder().build());
         return "customers/findCustomers";
     }
@@ -53,7 +53,7 @@ public class CustomerController {
     //@Secured({"ROLE_ADMIN","ROLE_CUSTOMER"}) //Secure this method: only ADMIN and CUSTOMER Role can access this
     @PreAuthorize("hasAuthority('customer.read')")
     @GetMapping
-    public String processFindFormReturnMany(Customer customer, BindingResult result, Model model){
+    public String processFindFormReturnMany(Customer customer, BindingResult result, Model model) {
         // find customers by name
         //ToDO: Add Service
         List<Customer> customers = customerRepository.findAllByCustomerNameLike("%" + customer.getCustomerName() + "%");
@@ -73,7 +73,7 @@ public class CustomerController {
     }
 
     @PreAuthorize("hasAuthority('customer.read')")
-   @GetMapping("/{customerId}")
+    @GetMapping("/{customerId}")
     public ModelAndView showCustomer(@PathVariable UUID customerId) {
         ModelAndView mav = new ModelAndView("customers/customerDetails");
         //ToDO: Add Service
@@ -98,17 +98,17 @@ public class CustomerController {
                 .customerName(customer.getCustomerName())
                 .build();
 
-        Customer savedCustomer= customerRepository.save(newCustomer);
+        Customer savedCustomer = customerRepository.save(newCustomer);
         return "redirect:/customers/" + savedCustomer.getId();
     }
 
     @PreAuthorize("hasAuthority('customer.update')")
     @GetMapping("/{customerId}/edit")
-   public String initUpdateCustomerForm(@PathVariable UUID customerId, Model model) {
-       if(customerRepository.findById(customerId).isPresent())
-          model.addAttribute("customer", customerRepository.findById(customerId).get());
-       return "customers/createOrUpdateCustomer";
-   }
+    public String initUpdateCustomerForm(@PathVariable UUID customerId, Model model) {
+        if (customerRepository.findById(customerId).isPresent())
+            model.addAttribute("customer", customerRepository.findById(customerId).get());
+        return "customers/createOrUpdateCustomer";
+    }
 
     @PreAuthorize("hasAuthority('customer.update')")
     @PostMapping("/{beerId}/edit")
@@ -117,7 +117,7 @@ public class CustomerController {
             return "beers/createOrUpdateCustomer";
         } else {
             //ToDO: Add Service
-            Customer savedCustomer =  customerRepository.save(customer);
+            Customer savedCustomer = customerRepository.save(customer);
             return "redirect:/customers/" + savedCustomer.getId();
         }
     }

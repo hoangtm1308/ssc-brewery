@@ -47,7 +47,7 @@ public class AuthenticationFailureListener {
             }
             LoginFailure failure = loginFailureRepository.save(builder.build());
             log.debug("Failure Event: {}", failure.getId());
-            if(failure.getUser() != null){
+            if (failure.getUser() != null) {
                 lockUserAccount(failure.getUser());
             }
         }
@@ -57,8 +57,8 @@ public class AuthenticationFailureListener {
         List<LoginFailure> failures = loginFailureRepository.findAllByUserAndCreatedDateIsAfter(
                 user,
                 Timestamp.valueOf(LocalDateTime.now().minusDays(1))
-                );
-        if(failures.size() > 3){
+        );
+        if (failures.size() > 3) {
             log.debug("Locking User Account... ");
             user.setAccountNonLocked(false);
             userRepository.save(user);
