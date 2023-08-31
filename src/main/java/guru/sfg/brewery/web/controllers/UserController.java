@@ -48,7 +48,9 @@ public class UserController {
 
         if (googleAuthenticator.authorizeUser(user.getUsername(), verifyCode)) {
             User savedUser = userRepository.findById(user.getId()).orElseThrow();
-            savedUser.setUserGoogle2fa(true);
+
+            // Ready to use google 2FA authentication when verified code is success
+            savedUser.setUseGoogle2fa(true);
             userRepository.save(savedUser);
             return "index";
         } else {
@@ -58,15 +60,17 @@ public class UserController {
     }
 
     @GetMapping("/verify2fa")
-    public String verify2fa(){
+    public String verify2fa() {
         return "user/verify2fa";
     }
 
     @PostMapping
-    public String verifyPostOf2Fa(@RequestParam Integer verifyCode){
+    public String verifyPostOf2Fa(@RequestParam Integer verifyCode) {
         User user = getUser();
+
+        //User already registered google 2FA and send the OTP Code to log in system
         if (googleAuthenticator.authorizeUser(user.getUsername(), verifyCode)) {
-            ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).setGoogle2faRequired(false);
+            ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).setGoogle2faRequired(false);
 
             return "/index";
         } else {
