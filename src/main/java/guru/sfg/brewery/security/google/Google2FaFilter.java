@@ -1,9 +1,7 @@
 package guru.sfg.brewery.security.google;
 
 import guru.sfg.brewery.domain.security.User;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Request;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.autoconfigure.security.servlet.StaticResourceRequest;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -23,17 +21,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Created by jt on 7/24/20.
+ */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class Google2FaFilter extends GenericFilterBean {
 
     private final AuthenticationTrustResolver authenticationTrustResolver = new AuthenticationTrustResolverImpl();
-
     private final Google2faFailureHandler google2faFailureHandler = new Google2faFailureHandler();
-
     private final RequestMatcher urlIs2fa = new AntPathRequestMatcher("/user/verify2fa");
-    private final RequestMatcher urlResource = new AntPathRequestMatcher("/resource/**");
+    private final RequestMatcher urlResource = new AntPathRequestMatcher("/resources/**");
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -51,23 +49,22 @@ public class Google2FaFilter extends GenericFilterBean {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && !authenticationTrustResolver.isAnonymous(authentication)) {
-            log.debug("Processing 2FA Filter ...");
+        if (authentication != null  && !authenticationTrustResolver.isAnonymous(authentication)){
+            log.debug("Processing 2FA Filter");
 
             if (authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
                 User user = (User) authentication.getPrincipal();
 
-                //Condition to check when user already enrolls google 2FA used but not authenticate with google 2FA
                 if (user.getUseGoogle2fa() && user.getGoogle2faRequired()) {
                     log.debug("2FA Required");
 
                     google2faFailureHandler.onAuthenticationFailure(request, response, null);
                     return;
                 }
+
             }
         }
 
         filterChain.doFilter(request, response);
-
     }
 }

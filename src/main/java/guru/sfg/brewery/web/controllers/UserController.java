@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * Created by jt on 7/23/20.
+ */
 @Slf4j
 @RequestMapping("/user")
 @Controller
@@ -21,11 +24,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UserController {
 
     private final UserRepository userRepository;
-
     private final GoogleAuthenticator googleAuthenticator;
 
     @GetMapping("/register2fa")
-    public String register2fa(Model model) {
+    public String register2fa(Model model){
 
         User user = getUser();
 
@@ -39,8 +41,8 @@ public class UserController {
         return "user/register2fa";
     }
 
-    @PostMapping
-    public String confirm2Fa(@RequestParam Integer verifyCode) {
+    @PostMapping("/register2fa")
+    public String confirm2Fa(@RequestParam Integer verifyCode){
 
         User user = getUser();
 
@@ -52,25 +54,26 @@ public class UserController {
             // Ready to use google 2FA authentication when verified code is success
             savedUser.setUseGoogle2fa(true);
             userRepository.save(savedUser);
-            return "index";
+
+            return "/index";
         } else {
-            //bad code
+            // bad code
             return "user/register2fa";
         }
     }
 
     @GetMapping("/verify2fa")
-    public String verify2fa() {
+    public String verify2fa(){
         return "user/verify2fa";
     }
 
-    @PostMapping
-    public String verifyPostOf2Fa(@RequestParam Integer verifyCode) {
+    @PostMapping("/verify2fa")
+    public String verifyPostOf2Fa(@RequestParam Integer verifyCode){
+
         User user = getUser();
 
-        //User already registered google 2FA and send the OTP Code to log in system
         if (googleAuthenticator.authorizeUser(user.getUsername(), verifyCode)) {
-            ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).setGoogle2faRequired(false);
+            ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).setGoogle2faRequired(false);
 
             return "/index";
         } else {
@@ -78,7 +81,9 @@ public class UserController {
         }
     }
 
-    private static User getUser() {
+    private User getUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
+
+
 }

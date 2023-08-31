@@ -1,6 +1,7 @@
 package guru.sfg.brewery.config;
 
 import guru.sfg.brewery.security.CustomPasswordEncoderFactories;
+import guru.sfg.brewery.security.google.Google2FaFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.SessionManagementFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final PersistentTokenRepository persistentTokenRepository;
+    private final Google2FaFilter google2FaFilter;
 
     //Needed for use with Spring Data JPL SPeL
     @Bean
@@ -59,6 +62,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // "/*" cho phép các tầng truy cập cùng level với dấu sao
         // "/**" cho phép toàn bộ sau dấu /
+        http.addFilterBefore(google2FaFilter, SessionManagementFilter.class);
+
         http
                 .authorizeRequests(authorize -> {
                     authorize
@@ -97,9 +102,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             .permitAll();
                 })
                 //.csrf().disable()
-                .csrf().ignoringAntMatchers("/h2-console/**", "/api/**")
-                .and()
                 .httpBasic()
+                .and().csrf().ignoringAntMatchers("/h2-console/**", "/api/**")
                 .and().rememberMe()
 
                 .tokenRepository(persistentTokenRepository) // using PersistentToken for remember-me
