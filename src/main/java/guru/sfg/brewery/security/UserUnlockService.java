@@ -17,7 +17,7 @@ import java.util.List;
 public class UserUnlockService {
     private final UserRepository userRepository;
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 360000)
     public void unlockAccounts() {
         log.debug("Running Unlock Accounts");
 
