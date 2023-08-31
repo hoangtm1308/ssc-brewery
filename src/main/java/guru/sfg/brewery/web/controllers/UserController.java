@@ -25,7 +25,7 @@ public class UserController {
     private final GoogleAuthenticator googleAuthenticator;
 
     @GetMapping("/register2fa")
-    public String register2fa(Model model){
+    public String register2fa(Model model) {
 
         User user = getUser();
 
@@ -39,13 +39,25 @@ public class UserController {
         return "user/register2fa";
     }
 
-    private static User getUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
     @PostMapping()
     public String confirm2Fa(@RequestParam Integer verifyCode) {
 
-        return "index";
+        User user = getUser();
+
+        log.debug("Entered Code is: {}", verifyCode);
+
+        if (googleAuthenticator.authorizeUser(user.getUsername(), verifyCode)) {
+            User savedUser = userRepository.findById(user.getId()).orElseThrow();
+            savedUser.setUserGoogle2fa(true);
+            userRepository.save(savedUser);
+            return "index";
+        } else {
+            //bad code
+            return "user/register2fa";
+        }
+    }
+
+    private static User getUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
