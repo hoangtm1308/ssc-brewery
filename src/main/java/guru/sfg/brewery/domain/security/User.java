@@ -54,16 +54,24 @@ public class User implements UserDetails, CredentialsContainer {
     private Set<Role> roles;
 
     @Builder.Default //Khi dùng builder mà không set giá trị sẽ mặc định để giá trị này
-    private boolean accountNonExpired = true;
+    private Boolean accountNonExpired = true;
 
     @Builder.Default
-    private boolean accountNonLocked = true;
+    private Boolean accountNonLocked = true;
 
     @Builder.Default
-    private boolean credentialsNonExpired = true;
+    private Boolean credentialsNonExpired = true;
 
     @Builder.Default
-    private boolean enabled = true;
+    private Boolean enabled = true;
+
+    @Builder.Default
+    private Boolean userGoogle2fa = false;
+
+    private String google2FaSecret;
+
+    @Transient
+    private Boolean google2faRequired = true;
 
     @Override
     public boolean isAccountNonExpired() {
